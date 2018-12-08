@@ -84,35 +84,35 @@
           ></v-divider>
         </v-flex>
       </v-layout>
-      <template v-for="(test, index) in tests">
-        <v-layout>
+      <template v-for="(inspection, index) in inspections">
+        <v-layout :key="index">
           <v-flex xs-6>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.filename"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs-6>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.status"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.status"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
@@ -123,22 +123,22 @@
 </template>
 
 <script>
-const internalNext = (tests, cursor) => {
-  const test = tests.slice(cursor + 1, tests.lenght).find(test => test.status === '');
+const internalNext = (inspections, cursor) => {
+  const inspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.status === '');
 
-  if (test == null || test.cursor == null) return internalBack(tests, cursor + 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalBack(inspections, cursor + 1);
+  return inspection.cursor;
 };
 
-const internalBack = (tests, cursor) => {
-  const test = tests.slice(0, cursor).filter(test => test.status === '').pop();
+const internalBack = (inspections, cursor) => {
+  const inspection = inspections.slice(0, cursor).filter(inspection => inspection.status === '').pop();
 
-  if (test == null || test.cursor == null) return internalNext(tests, cursor - 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalNext(inspections, cursor - 1);
+  return inspection.cursor;
 };
 
 const answer = (data) => {
-  const finish = data.tests.find(test => test.status === '') == null;
+  const finish = data.inspections.find(inspection => inspection.status === '') == null;
 
   if (finish) {
     alert('Finished!!');
@@ -149,14 +149,14 @@ const answer = (data) => {
   }
 
   data.played = false;
-  data.cursor = internalNext(data.tests, data.cursor);
+  data.cursor = internalNext(data.inspections, data.cursor);
 };
 
 export default {
   props: [
     'title',
     'backPath',
-    'tests',
+    'inspections',
   ],
   data: () => ({
     cursor: 0,
@@ -166,8 +166,8 @@ export default {
   }),
   watch: {
     cursor: function () {
-      if (this.tests == null || this.tests.length === 0) return;
-      this.sound = this.tests[this.cursor].fullpath;
+      if (this.inspections == null || this.inspections.length === 0) return;
+      this.sound = this.inspections[this.cursor].fullpath;
     },
   },
   methods: {
@@ -176,29 +176,29 @@ export default {
       audio.load();
       audio.play();
       this.played = true;
-      this.tests[this.cursor].status = '再生中';
+      this.inspections[this.cursor].status = '再生中';
     },
     next() {
-      if (this.tests.length === this.cursor + 1) return;
+      if (this.inspections.length === this.cursor + 1) return;
       this.played = false;
-      this.cursor = internalNext(this.tests, this.cursor);
+      this.cursor = internalNext(this.inspections, this.cursor);
     },
     back() {
       if (this.cursor === 0) return;
       this.played = false;
-      this.cursor = internalBack(this.tests, this.cursor);
+      this.cursor = internalBack(this.inspections, this.cursor);
     },
     wrong() {
-      this.tests[this.cursor].status = '誤答';
+      this.inspections[this.cursor].status = '誤答';
       answer(this);
     },
     correct() {
-      this.tests[this.cursor].status = '正答';
+      this.inspections[this.cursor].status = '正答';
       answer(this);
     },
   },
   updated() {
-    this.sound = this.tests[this.cursor].fullpath;
+    this.sound = this.inspections[this.cursor].fullpath;
     this.ready = true;
   },
 };

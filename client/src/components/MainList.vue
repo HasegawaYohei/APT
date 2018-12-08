@@ -15,12 +15,12 @@ export default {
     inspections: [
       {
         title: '両耳分離聴検査',
-        path: 'dichoticListeningTest',
+        path: 'dichoticListeningInspection',
         divider: true,
       },
       {
         title: '早口音声聴取検査',
-        path: 'fastsoundListeningTest',
+        path: 'fastsoundListeningInspection',
         divider: true,
       },
       {
@@ -33,7 +33,7 @@ export default {
       },
       {
         title: '両耳交互聴検査',
-        path: 'bothEarsAlternatingTest',
+        path: 'bothEarsAlternatingInspection',
         divider: true,
       },
       {
@@ -42,7 +42,7 @@ export default {
       },
       {
         title: '複数音声下聴取検査',
-        path: 'multipleSoundListeningTest',
+        path: 'multipleSoundListeningInspection',
         divider: true,
       },
       {

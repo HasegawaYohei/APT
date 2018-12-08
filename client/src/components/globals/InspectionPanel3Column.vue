@@ -43,7 +43,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statusL !== ''"
+            :disabled="!played || inspections[cursor].statusL !== ''"
             @click="answer('L','誤答')"
              >誤答 L</v-btn>
         </v-flex>
@@ -52,7 +52,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statusL !== ''"
+            :disabled="!played || inspections[cursor].statusL !== ''"
             @click="answer('L','正答')"
              >正答 L</v-btn>
         </v-flex>
@@ -61,7 +61,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statusR !== ''"
+            :disabled="!played || inspections[cursor].statusR !== ''"
             @click="answer('R','誤答')"
              >誤答 R</v-btn>
         </v-flex>
@@ -70,7 +70,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statusR !== ''"
+            :disabled="!played || inspections[cursor].statusR !== ''"
             @click="answer('R','正答')"
              >正答 R</v-btn>
         </v-flex>
@@ -113,50 +113,50 @@
           ></v-divider>
         </v-flex>
       </v-layout>
-      <template v-for="(test, index) in tests">
+      <template v-for="(inspection, index) in inspections">
         <v-layout>
           <v-flex xs6>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.filename"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs3>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.statusL"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.statusL"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs3>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.statusR"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.statusR"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
@@ -167,22 +167,22 @@
 </template>
 
 <script>
-const internalNext = (tests, cursor) => {
-  const test = tests.slice(cursor + 1, tests.lenght).find(test => test.statusL === '' && test.statusR === '');
+const internalNext = (inspections, cursor) => {
+  const inspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.statusL === '' && inspection.statusR === '');
 
-  if (test == null || test.cursor == null) return internalBack(tests, cursor + 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalBack(inspections, cursor + 1);
+  return inspection.cursor;
 };
 
-const internalBack = (tests, cursor) => {
-  const test = tests.slice(0, cursor).filter(test => test.statusL === '' && test.statusR === '').pop();
+const internalBack = (inspections, cursor) => {
+  const inspection = inspections.slice(0, cursor).filter(inspection => inspection.statusL === '' && inspection.statusR === '').pop();
 
-  if (test == null || test.cursor == null) return internalNext(tests, cursor - 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalNext(inspections, cursor - 1);
+  return inspection.cursor;
 };
 
 const answer = (data) => {
-  const finish = data.tests.find(test => test.status === '') == null;
+  const finish = data.inspections.find(inspection => inspection.status === '') == null;
 
   if (finish) {
     alert('Finished!!');
@@ -193,14 +193,14 @@ const answer = (data) => {
   }
 
   data.played = false;
-  data.cursor = internalNext(data.tests, data.cursor);
+  data.cursor = internalNext(data.inspections, data.cursor);
 };
 
 export default {
   props: [
     'title',
     'backPath',
-    'tests',
+    'inspections',
   ],
   data: () => ({
     cursor: 0,
@@ -210,8 +210,8 @@ export default {
   }),
   watch: {
     cursor: function () {
-      if (this.tests == null || this.tests.length === 0) return;
-      this.sound = this.tests[this.cursor].fullpath;
+      if (this.inspections == null || this.inspections.length === 0) return;
+      this.sound = this.inspections[this.cursor].fullpath;
     },
   },
   methods: {
@@ -222,26 +222,26 @@ export default {
       this.played = true;
     },
     next() {
-      if (this.tests.length === this.cursor + 1) return;
+      if (this.inspections.length === this.cursor + 1) return;
       this.played = false;
-      this.cursor = internalNext(this.tests, this.cursor);
+      this.cursor = internalNext(this.inspections, this.cursor);
     },
     back() {
       if (this.cursor === 0) return;
       this.played = false;
-      this.cursor = internalBack(this.tests, this.cursor);
+      this.cursor = internalBack(this.inspections, this.cursor);
     },
     answer(LR, result) {
       if (LR === 'L') {
-        this.tests[this.cursor].statusL = result;
-        if (this.tests[this.cursor].statusR === '') return;
+        this.inspections[this.cursor].statusL = result;
+        if (this.inspections[this.cursor].statusR === '') return;
       }
       else {
-        this.tests[this.cursor].statusR = result;
-        if (this.tests[this.cursor].statusL === '') return;
+        this.inspections[this.cursor].statusR = result;
+        if (this.inspections[this.cursor].statusL === '') return;
       }
 
-      const finish = this.tests.find(test => test.statusL === '' && test.statusR === '') == null;
+      const finish = this.inspections.find(inspection => inspection.statusL === '' && inspection.statusR === '') == null;
 
       if (finish) {
         alert('Finished');
@@ -252,11 +252,11 @@ export default {
       }
 
       this.played = false;
-      this.cursor = internalNext(this.tests, this.cursor);
+      this.cursor = internalNext(this.inspections, this.cursor);
     }
   },
   updated() {
-    this.sound = this.tests[this.cursor].fullpath;
+    this.sound = this.inspections[this.cursor].fullpath;
     this.ready = true;
   },
 };

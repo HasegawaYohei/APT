@@ -3,10 +3,10 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const DichoticListeningTest = require('./routes/DichoticListeningTest');
-const FastSoundListeningTest = require('./routes/FastSoundListeningTest');
-const BothEarsAlternatingTest = require('./routes/BothEarsAlternatingTest');
-const MultipleSoundListeningTest = require('./routes/MultipleSoundListeningTest');
+const DichoticListeningInspection = require('./routes/DichoticListeningInspection');
+const FastSoundListeningInspection = require('./routes/FastSoundListeningInspection');
+const BothEarsAlternatingInspection = require('./routes/BothEarsAlternatingInspection');
+const MultipleSoundListeningInspection = require('./routes/MultipleSoundListeningInspection');
 
 const app = express();
 
@@ -17,10 +17,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use('/static', express.static(__dirname + '/public'));
 
-app.use('/dichotic-listening-test', DichoticListeningTest);
-app.use('/fastsound-listening-test', FastSoundListeningTest);
-app.use('/both-ears-alternating-test', BothEarsAlternatingTest);
-app.use('/multiple-sound-listening-test', MultipleSoundListeningTest);
+app.use('/dichotic-listening-inspection', DichoticListeningInspection);
+app.use('/fastsound-listening-inspection', FastSoundListeningInspection);
+app.use('/both-ears-alternating-inspection', BothEarsAlternatingInspection);
+app.use('/multiple-sound-listening-inspection', MultipleSoundListeningInspection);
 
 app.get('/', (req, res, next) => {
   res.send(200, 'I\'m fine.');

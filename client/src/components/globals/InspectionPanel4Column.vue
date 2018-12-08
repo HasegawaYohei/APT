@@ -43,7 +43,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[0] !== ''"
+            :disabled="!played || inspections[cursor].statuses[0] !== ''"
             @click="answer(0, '誤答')"
              >誤答 1</v-btn>
         </v-flex>
@@ -52,7 +52,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[0] !== ''"
+            :disabled="!played || inspections[cursor].statuses[0] !== ''"
             @click="answer(0, '正答')"
              >正答 1</v-btn>
         </v-flex>
@@ -61,7 +61,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[1] !== ''"
+            :disabled="!played || inspections[cursor].statuses[1] !== ''"
             @click="answer(1, '誤答')"
              >誤答 2</v-btn>
         </v-flex>
@@ -70,7 +70,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[1] !== ''"
+            :disabled="!played || inspections[cursor].statuses[1] !== ''"
             @click="answer(1, '正答')"
              >正答 2</v-btn>
         </v-flex>
@@ -79,7 +79,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[2] !== ''"
+            :disabled="!played || inspections[cursor].statuses[2] !== ''"
             @click="answer(2, '誤答')"
              >誤答 3</v-btn>
         </v-flex>
@@ -88,7 +88,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || tests[cursor].statuses[2] !== ''"
+            :disabled="!played || inspections[cursor].statuses[2] !== ''"
             @click="answer(2, '正答')"
              >正答 3</v-btn>
         </v-flex>
@@ -143,65 +143,65 @@
         </v-flex>
 
       </v-layout>
-      <template v-for="(test, index) in tests">
+      <template v-for="(inspection, index) in inspections">
         <v-layout>
           <v-flex xs6>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.filename"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs2>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.statuses[0]"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.statuses[0]"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs2>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.statuses[1]"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.statuses[1]"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
           <v-flex xs2>
             <v-list-tile
-              :key="test.filename"
+              :key="inspection.filename"
               :class="cursor === index ? 'active' : 'disactive'"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-html="test.statuses[2]"></v-list-tile-title>
+                <v-list-tile-title v-html="inspection.statuses[2]"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-divider
-              v-if="test.divider"
+              v-if="inspection.divider"
               :key="index"
             ></v-divider>
           </v-flex>
@@ -212,25 +212,25 @@
 </template>
 
 <script>
-const internalNext = (tests, cursor) => {
-  const test = tests.slice(cursor + 1, tests.lenght).find(test => test.statuses.some(status => status === ''));
+const internalNext = (inspections, cursor) => {
+  const inspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.statuses.some(status => status === ''));
 
-  if (test == null || test.cursor == null) return internalBack(tests, cursor + 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalBack(inspections, cursor + 1);
+  return inspection.cursor;
 };
 
-const internalBack = (tests, cursor) => {
-  const test = tests.slice(0, cursor).filter(test => test.statuses.some(status => status === '')).pop();
+const internalBack = (inspections, cursor) => {
+  const inspection = inspections.slice(0, cursor).filter(inspection => inspection.statuses.some(status => status === '')).pop();
 
-  if (test == null || test.cursor == null) return internalNext(tests, cursor - 1);
-  return test.cursor;
+  if (inspection == null || inspection.cursor == null) return internalNext(inspections, cursor - 1);
+  return inspection.cursor;
 };
 
 export default {
   props: [
     'title',
     'backPath',
-    'tests',
+    'inspections',
   ],
   data: () => ({
     cursor: 0,
@@ -240,8 +240,8 @@ export default {
   }),
   watch: {
     cursor: function () {
-      if (this.tests == null || this.tests.length === 0) return;
-      this.sound = this.tests[this.cursor].fullpath;
+      if (this.inspections == null || this.inspections.length === 0) return;
+      this.sound = this.inspections[this.cursor].fullpath;
     },
   },
   methods: {
@@ -252,25 +252,25 @@ export default {
       this.played = true;
     },
     next() {
-      if (this.tests.length === this.cursor + 1) return;
+      if (this.inspections.length === this.cursor + 1) return;
       this.played = false;
-      this.cursor = internalNext(this.tests, this.cursor);
+      this.cursor = internalNext(this.inspections, this.cursor);
     },
     back() {
       if (this.cursor === 0) return;
       this.played = false;
-      this.cursor = internalBack(this.tests, this.cursor);
+      this.cursor = internalBack(this.inspections, this.cursor);
     },
     answer(index, result) {
-      const origin = this.tests[this.cursor].statuses;
-      this.tests[this.cursor].statuses = origin.map((s, i) => {
+      const origin = this.inspections[this.cursor].statuses;
+      this.inspections[this.cursor].statuses = origin.map((s, i) => {
         if (i === index) return result;
         return s;
       });
 
-      if (this.tests[this.cursor].statuses.some(status => status === '')) return;
+      if (this.inspections[this.cursor].statuses.some(status => status === '')) return;
 
-      const finish = this.tests.find(test => !test.statuses.every(status => status !== '')) == null;
+      const finish = this.inspections.find(inspection => !inspection.statuses.every(status => status !== '')) == null;
 
       if (finish) {
         alert('Finished');
@@ -281,11 +281,11 @@ export default {
       }
 
       this.played = false;
-      this.cursor = internalNext(this.tests, this.cursor);
+      this.cursor = internalNext(this.inspections, this.cursor);
     }
   },
   updated() {
-    this.sound = this.tests[this.cursor].fullpath;
+    this.sound = this.inspections[this.cursor].fullpath;
     this.ready = true;
   },
 };
