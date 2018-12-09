@@ -24,7 +24,7 @@
         ></v-divider>
       </template>
     </v-list>
-</v-card>
+  </v-card>
 </template>
 
 <script>
@@ -46,7 +46,4 @@ export default {
 </script>
 
 <style>
-.text-center{
-  text-align: center;
-}
 </style>
