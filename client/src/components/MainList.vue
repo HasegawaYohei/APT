@@ -25,6 +25,7 @@ export default {
       },
       {
         title: 'ギャップ検出閾値検査',
+        path: 'gapDetectionInspection',
         divider: true,
       },
       {
