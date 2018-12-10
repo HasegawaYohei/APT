@@ -63,6 +63,11 @@ export default new Router({
       component: () => import('./views/FastSoundListeningInspection/MoreFast.vue'),
     },
     {
+      path: '/gap-detection-inspection',
+      name: 'gapDetectionInspection',
+      component: () => import('./views/GapDetectionInspection/Index.vue'),
+    },
+    {
       path: '/both-ears-alternating-inspection',
       name: 'bothEarsAlternatingInspection',
       component: () => import('./views/BothEarsAlternatingInspection/Index.vue'),
