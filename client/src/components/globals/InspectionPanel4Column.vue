@@ -2,6 +2,9 @@
   <div>
     <v-card>
       <v-toolbar color="cyan" dark>
+        <v-btn icon class="hidden-xs-only" @click="browserBack">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
         <v-toolbar-title>{{title}}</v-toolbar-title>
       </v-toolbar>
     </v-card>
@@ -144,7 +147,7 @@
 
       </v-layout>
       <template v-for="(inspection, index) in inspections">
-        <v-layout>
+        <v-layout :key="index">
           <v-flex xs6>
             <v-list-tile
               :key="inspection.filename"
@@ -212,19 +215,19 @@
 </template>
 
 <script>
-const internalNext = (inspections, cursor) => {
-  const inspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.statuses.some(status => status === ''));
+function internalBack(inspections, cursor) {
+  const previousInspection = inspections.slice(0, cursor).filter(inspection => inspection.statuses.some(status => status === '')).pop();
 
-  if (inspection == null || inspection.cursor == null) return internalBack(inspections, cursor + 1);
-  return inspection.cursor;
-};
+  if (previousInspection == null || previousInspection.cursor == null) return internalNext(inspections, cursor - 1);
+  return previousInspection.cursor;
+}
 
-const internalBack = (inspections, cursor) => {
-  const inspection = inspections.slice(0, cursor).filter(inspection => inspection.statuses.some(status => status === '')).pop();
+function internalNext(inspections, cursor) {
+  const nextInspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.statuses.some(status => status === ''));
 
-  if (inspection == null || inspection.cursor == null) return internalNext(inspections, cursor - 1);
-  return inspection.cursor;
-};
+  if (nextInspection == null || nextInspection.cursor == null) return internalBack(inspections, cursor + 1);
+  return nextInspection.cursor;
+}
 
 export default {
   props: [
@@ -282,7 +285,12 @@ export default {
 
       this.played = false;
       this.cursor = internalNext(this.inspections, this.cursor);
-    }
+    },
+    browserBack() {
+      this.$router.push({
+        name: this.backPath,
+      });
+    },
   },
   updated() {
     this.sound = this.inspections[this.cursor].fullpath;

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <GapDetectionInspectionPanel />
+    <GapDetectionInspectionPanel
+    backPath="home" />
   </div>
 </template>
 

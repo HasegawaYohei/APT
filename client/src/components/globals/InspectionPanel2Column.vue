@@ -2,6 +2,9 @@
   <div>
     <v-card>
       <v-toolbar color="cyan" dark>
+        <v-btn icon class="hidden-xs-only" @click="browserBack">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
         <v-toolbar-title>{{title}}</v-toolbar-title>
       </v-toolbar>
     </v-card>
@@ -195,6 +198,11 @@ export default {
     correct() {
       this.inspections[this.cursor].status = '正答';
       answer(this);
+    },
+    browserBack() {
+      this.$router.push({
+        name: this.backPath,
+      });
     },
   },
   updated() {

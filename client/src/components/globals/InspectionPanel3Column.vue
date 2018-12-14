@@ -2,6 +2,9 @@
   <div>
     <v-card>
       <v-toolbar color="cyan" dark>
+        <v-btn icon class="hidden-xs-only" @click="browserBack">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
         <v-toolbar-title>{{title}}</v-toolbar-title>
       </v-toolbar>
     </v-card>
@@ -253,7 +256,12 @@ export default {
 
       this.played = false;
       this.cursor = internalNext(this.inspections, this.cursor);
-    }
+    },
+    browserBack() {
+      this.$router.push({
+        name: this.backPath,
+      });
+    },
   },
   updated() {
     this.sound = this.inspections[this.cursor].fullpath;
