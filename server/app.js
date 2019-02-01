@@ -7,6 +7,7 @@ const DichoticListeningInspection = require('./routes/DichoticListeningInspectio
 const FastSoundListeningInspection = require('./routes/FastSoundListeningInspection');
 const BothEarsAlternatingInspection = require('./routes/BothEarsAlternatingInspection');
 const MultipleSoundListeningInspection = require('./routes/MultipleSoundListeningInspection');
+const AuditoryAttentionInspection = require('./routes/AuditoryAttentionInspection');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/dichotic-listening-inspection', DichoticListeningInspection);
 app.use('/fastsound-listening-inspection', FastSoundListeningInspection);
 app.use('/both-ears-alternating-inspection', BothEarsAlternatingInspection);
 app.use('/multiple-sound-listening-inspection', MultipleSoundListeningInspection);
+app.use('/auditory-attention-inspection', AuditoryAttentionInspection);
 
 app.get('/', (req, res, next) => {
   res.send(200, 'I\'m fine.');

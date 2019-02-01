@@ -39,6 +39,7 @@ export default {
       },
       {
         title: '聴覚的注意検査',
+        path: 'auditoryAttentionInspection',
         divider: true,
       },
       {
