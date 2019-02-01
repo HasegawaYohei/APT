@@ -77,5 +77,10 @@ export default new Router({
       name: 'multipleSoundListeningInspection',
       component: () => import('./views/MultipleSoundListeningInspection/Index.vue'),
     },
+    {
+      path: '/auditory-attention-inspection',
+      name: 'auditoryAttentionInspection',
+      component: () => import('./views/AuditoryAttentionInspection/Index.vue'),
+    },
   ],
 });
