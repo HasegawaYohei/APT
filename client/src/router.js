@@ -78,6 +78,11 @@ export default new Router({
       component: () => import('./views/MultipleSoundListeningInspection/Index.vue'),
     },
     {
+      path: '/the-word-under-noise-inspection',
+      name: 'theWordUnderNoiseInspection',
+      component: () => import('./views/TheWordUnderNoiseInspection/Index.vue'),
+    },
+    {
       path: '/auditory-attention-inspection',
       name: 'auditoryAttentionInspection',
       component: () => import('./views/AuditoryAttentionInspection/Index.vue'),
