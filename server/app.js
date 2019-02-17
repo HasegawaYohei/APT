@@ -5,9 +5,11 @@ const cors = require('cors');
 
 const DichoticListeningInspection = require('./routes/DichoticListeningInspection');
 const FastSoundListeningInspection = require('./routes/FastSoundListeningInspection');
+const GapDetectionInspection = require('./routes/GapDetectionInspection');
+const TheWordUnderNoiseInspection = require('./routes/TheWordUnderNoiseInspection');
 const BothEarsAlternatingInspection = require('./routes/BothEarsAlternatingInspection');
-const MultipleSoundListeningInspection = require('./routes/MultipleSoundListeningInspection');
 const AuditoryAttentionInspection = require('./routes/AuditoryAttentionInspection');
+const MultipleSoundListeningInspection = require('./routes/MultipleSoundListeningInspection');
 
 const app = express();
 
@@ -20,9 +22,11 @@ app.use('/static', express.static(__dirname + '/public'));
 
 app.use('/dichotic-listening-inspection', DichoticListeningInspection);
 app.use('/fastsound-listening-inspection', FastSoundListeningInspection);
+app.use('/gap-detection-inspection', GapDetectionInspection);
+app.use('/the-word-under-noise-inspection', TheWordUnderNoiseInspection);
 app.use('/both-ears-alternating-inspection', BothEarsAlternatingInspection);
-app.use('/multiple-sound-listening-inspection', MultipleSoundListeningInspection);
 app.use('/auditory-attention-inspection', AuditoryAttentionInspection);
+app.use('/multiple-sound-listening-inspection', MultipleSoundListeningInspection);
 
 app.get('/', (req, res, next) => {
   res.send(200, 'I\'m fine.');
