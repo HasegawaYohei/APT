@@ -1,7 +1,9 @@
 <template>
   <div>
     <GapDetectionInspectionPanel
-    backPath="home" />
+    title="ギャップ検出閾値検査"
+    backPath="home"
+    :inspections=inspections />
   </div>
 </template>
 
@@ -11,7 +13,18 @@ import GapDetectionInspectionPanel from '../../components/GapDetectionInspection
 
 export default {
   data: () => ({
+    inspections: [],
   }),
+  async created() {
+    const result = (await Api.get('/gap-detection-inspection')).data;
+    this.inspections = result;
+  },
   components: { GapDetectionInspectionPanel }
 };
 </script>
+
+<style lang="stylus">
+.result-list
+  height  610px
+  overflow scroll
+</style>
