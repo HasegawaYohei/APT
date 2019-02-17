@@ -2,7 +2,7 @@
   <v-container>
     <v-layout text-xs-center wrap>
       <v-flex offset-xs2 xs8>
-        <ListPanel :title="title" :inspections="inspections" />
+        <ListPanel :title="title" :inspections="inspections" :browserBack="browserBack"/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -34,9 +34,20 @@ export default {
         path: 'home',
       },
     ],
+    backPath: 'home',
   }),
+  methods: {
+    browserBack() {
+      this.$router.push({
+        name: this.backPath,
+      });
+    }
+  },
 };
 </script>
 
-<style>
+<style lang="stylus">
+.result-list
+  height  660px
+  overflow scroll
 </style>

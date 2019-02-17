@@ -1,7 +1,12 @@
 <template>
   <v-card>
     <v-toolbar color="cyan" dark>
-      <v-toolbar-title>{{title}}</v-toolbar-title>
+      <div v-if="!isMain" class="ml-minus">
+        <v-btn icon class="hidden-xs-only" @click="browserBack">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
+      </div>
+      <v-toolbar-title class="ml-0">{{title}}</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
 
@@ -32,6 +37,8 @@ export default {
   props: [
     'title',
     'inspections',
+    'browserBack',
+    'isMain',
   ],
   data: () => ({
   }),
@@ -45,5 +52,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="stylus">
+.ml-minus
+  margin-left -24px
 </style>
