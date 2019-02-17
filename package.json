@@ -1,11 +1,8 @@
 {
   "name": "APT",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/HasegawaYohei/APT.git",
-  "author": "Hasegawa Yohei <yoheybrains@gmail.com>",
-  "license": "MIT",
   "private": true,
+  "author": "Hasegawa Yohei <yoheybrains@gmail.com>",
   "scripts": {
     "dev": "./node_modules/.bin/nodemon ./server/bin/www"
   },
@@ -16,5 +13,10 @@
     "express": "^4.16.4",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.7"
-  }
+  },
+  "devDependencies": {
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "https://github.com/HasegawaYohei/APT.git"
 }
