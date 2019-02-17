@@ -2,7 +2,7 @@
   <v-container>
     <v-layout text-xs-center wrap>
       <v-flex offset-xs2 xs8>
-        <ListPanel :title="title" :inspections="inspections" />
+        <ListPanel :title="title" :inspections="inspections" :isMain="true" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -11,7 +11,7 @@
 <script>
 export default {
   data: () => ({
-    title: 'APT 検査',
+    title: 'APT',
     inspections: [
       {
         title: '両耳分離聴検査',
@@ -30,6 +30,7 @@ export default {
       },
       {
         title: '雑音下単語聴取検査',
+        path: 'theWordUnderNoiseInspection',
         divider: true,
       },
       {
@@ -45,10 +46,6 @@ export default {
       {
         title: '複数音声下聴取検査',
         path: 'multipleSoundListeningInspection',
-        divider: true,
-      },
-      {
-        title: '終了',
         divider: false,
       },
     ],
