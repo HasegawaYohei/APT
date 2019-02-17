@@ -8,7 +8,7 @@ const asyncMap = (arr, fn) => Promise.all(arr.map(async v => await fn(v)));
 const wrapper = fn => (req, res, next) => fn (req, res).catch(next);
 
 router.get('/single-ear-single-sound', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleEarSingleSound');
+  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleEarSingleSound').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -18,12 +18,12 @@ router.get('/single-ear-single-sound', wrapper(async (req, res) => {
       status: '',
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/single-ear-single-word', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleEarSingleWord');
+  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleEarSingleWord').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -33,12 +33,12 @@ router.get('/single-ear-single-word', wrapper(async (req, res) => {
       status: '',
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/single-sound', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleSound');
+  const list = fs.readdirSync(__dirname + '/../public/sound/SH/SingleSound').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -49,12 +49,12 @@ router.get('/single-sound', wrapper(async (req, res) => {
       statusR: '',
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/word', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/SH/Word');
+  const list = fs.readdirSync(__dirname + '/../public/sound/SH/Word').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -65,12 +65,12 @@ router.get('/word', wrapper(async (req, res) => {
       statusR: '',
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/sentence', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/SH/Sentence');
+  const list = fs.readdirSync(__dirname + '/../public/sound/SH/Sentence').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -81,7 +81,7 @@ router.get('/sentence', wrapper(async (req, res) => {
       statusR: '',
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 

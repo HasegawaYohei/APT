@@ -8,7 +8,7 @@ const asyncMap = (arr, fn) => Promise.all(arr.map(async v => await fn(v)));
 const wrapper = fn => (req, res, next) => fn (req, res).catch(next);
 
 router.get('/', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/AA');
+  const list = fs.readdirSync(__dirname + '/../public/sound/AA').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {

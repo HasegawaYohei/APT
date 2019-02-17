@@ -8,7 +8,7 @@ const asyncMap = (arr, fn) => Promise.all(arr.map(async v => await fn(v)));
 const wrapper = fn => (req, res, next) => fn (req, res).catch(next);
 
 router.get('/normal', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/FS/STRING');
+  const list = fs.readdirSync(__dirname + '/../public/sound/FS/STRING').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -22,12 +22,12 @@ router.get('/normal', wrapper(async (req, res) => {
       ],
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/fast', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/FS/Fast');
+  const list = fs.readdirSync(__dirname + '/../public/sound/FS/Fast').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -41,12 +41,12 @@ router.get('/fast', wrapper(async (req, res) => {
       ],
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
 router.get('/more-fast', wrapper(async (req, res) => {
-  const list = fs.readdirSync(__dirname + '/../public/sound/FS/MoreFast');
+  const list = fs.readdirSync(__dirname + '/../public/sound/FS/MoreFast').filter(v => v.slice(-4) === '.wav');
   const length = list.length;
   const response = list.map((v, i) => {
     return {
@@ -60,7 +60,7 @@ router.get('/more-fast', wrapper(async (req, res) => {
       ],
       cursor: i
     };
-  }).slice(0, 2);
+  });
   return res.status(200).json(response);
 }));
 
