@@ -87,40 +87,42 @@
           ></v-divider>
         </v-flex>
       </v-layout>
-      <template v-for="(inspection, index) in inspections">
-        <v-layout :key="index">
-          <v-flex xs-6>
-            <v-list-tile
-              :key="inspection.filename"
-              :class="cursor === index ? 'active' : 'disactive'"
-            >
-              <v-list-tile-content>
-                <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+      <div class="result-list">
+        <template v-for="(inspection, index) in inspections">
+          <v-layout :key="index">
+            <v-flex xs-6>
+              <v-list-tile
+                :key="inspection.filename"
+                :class="cursor === index ? 'active' : 'disactive'"
+              >
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
 
-            <v-divider
-              v-if="inspection.divider"
-              :key="index"
-            ></v-divider>
-          </v-flex>
-          <v-flex xs-6>
-            <v-list-tile
-              :key="inspection.filename"
-              :class="cursor === index ? 'active' : 'disactive'"
-            >
-              <v-list-tile-content>
-                <v-list-tile-title v-html="inspection.status"></v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              <v-divider
+                v-if="inspection.divider"
+                :key="index"
+              ></v-divider>
+            </v-flex>
+            <v-flex xs-6>
+              <v-list-tile
+                :key="inspection.filename"
+                :class="cursor === index ? 'active' : 'disactive'"
+              >
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="inspection.status"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
 
-            <v-divider
-              v-if="inspection.divider"
-              :key="index"
-            ></v-divider>
-          </v-flex>
-        </v-layout>
-      </template>
+              <v-divider
+                v-if="inspection.divider"
+                :key="index"
+              ></v-divider>
+            </v-flex>
+          </v-layout>
+        </template>
+      </div>
     </v-list>
   </div>
 </template>
