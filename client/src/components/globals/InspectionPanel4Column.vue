@@ -46,7 +46,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[0] !== ''"
+            :disabled="!played || audioList[cursor].statuses[0] !== ''"
             @click="answer(0, '誤答')"
              >誤答 1</v-btn>
         </v-flex>
@@ -55,7 +55,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[0] !== ''"
+            :disabled="!played || audioList[cursor].statuses[0] !== ''"
             @click="answer(0, '正答')"
              >正答 1</v-btn>
         </v-flex>
@@ -64,7 +64,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[1] !== ''"
+            :disabled="!played || audioList[cursor].statuses[1] !== ''"
             @click="answer(1, '誤答')"
              >誤答 2</v-btn>
         </v-flex>
@@ -73,7 +73,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[1] !== ''"
+            :disabled="!played || audioList[cursor].statuses[1] !== ''"
             @click="answer(1, '正答')"
              >正答 2</v-btn>
         </v-flex>
@@ -82,7 +82,7 @@
             :large="true"
             color="error"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[2] !== ''"
+            :disabled="!played || audioList[cursor].statuses[2] !== ''"
             @click="answer(2, '誤答')"
              >誤答 3</v-btn>
         </v-flex>
@@ -91,7 +91,7 @@
             :large="true"
             color="success"
             class="btn-custom"
-            :disabled="!played || inspections[cursor].statuses[2] !== ''"
+            :disabled="!played || audioList[cursor].statuses[2] !== ''"
             @click="answer(2, '正答')"
              >正答 3</v-btn>
         </v-flex>
@@ -147,65 +147,65 @@
 
       </v-layout>
       <div class="result-list">
-        <template v-for="(inspection, index) in inspections">
+        <template v-for="(audio, index) in audioList">
           <v-layout :key="index">
             <v-flex xs6>
               <v-list-tile
-                :key="inspection.filename"
+                :key="audio.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
+                  <v-list-tile-title v-html="audio.filename"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
 
               <v-divider
-                v-if="inspection.divider"
+                v-if="audio.divider"
                 :key="index"
               ></v-divider>
             </v-flex>
             <v-flex xs2>
               <v-list-tile
-                :key="inspection.filename"
+                :key="audio.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.statuses[0]"></v-list-tile-title>
+                  <v-list-tile-title v-html="audio.statuses[0]"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
 
               <v-divider
-                v-if="inspection.divider"
+                v-if="audio.divider"
                 :key="index"
               ></v-divider>
             </v-flex>
             <v-flex xs2>
               <v-list-tile
-                :key="inspection.filename"
+                :key="audio.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.statuses[1]"></v-list-tile-title>
+                  <v-list-tile-title v-html="audio.statuses[1]"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
 
               <v-divider
-                v-if="inspection.divider"
+                v-if="audio.divider"
                 :key="index"
               ></v-divider>
             </v-flex>
             <v-flex xs2>
               <v-list-tile
-                :key="inspection.filename"
+                :key="audio.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.statuses[2]"></v-list-tile-title>
+                  <v-list-tile-title v-html="audio.statuses[2]"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
 
               <v-divider
-                v-if="inspection.divider"
+                v-if="audio.divider"
                 :key="index"
               ></v-divider>
             </v-flex>
@@ -217,68 +217,71 @@
 </template>
 
 <script>
-function internalBack(inspections, cursor) {
-  const previousInspection = inspections.slice(0, cursor).filter(inspection => inspection.statuses.some(status => status === '')).pop();
-
-  if (previousInspection == null || previousInspection.cursor == null) return internalNext(inspections, cursor - 1);
-  return previousInspection.cursor;
-}
-
-function internalNext(inspections, cursor) {
-  const nextInspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.statuses.some(status => status === ''));
-
-  if (nextInspection == null || nextInspection.cursor == null) return internalBack(inspections, cursor + 1);
-  return nextInspection.cursor;
-}
+import { remote } from 'electron';
+import { internalBack, internalNext } from '../../services/InspectionServie.js';
 
 export default {
   props: [
     'title',
     'backPath',
-    'inspections',
+    'audioList',
   ],
   data: () => ({
     cursor: 0,
     sound: '',
     played: false,
     ready: false,
+    audioBufferList: [],
   }),
   watch: {
     cursor: function () {
-      if (this.inspections == null || this.inspections.length === 0) return;
-      this.sound = this.inspections[this.cursor].fullpath;
+      if (this.audioList == null || this.audioList.length === 0) return;
+      this.sound = this.audioList[this.cursor].fullpath;
     },
   },
   methods: {
-    play() {
-      const audio = document.getElementById('sound');
-      audio.load();
-      audio.play();
+    async play() {
+      const context = new AudioContext();
+      const audioBuffer = this.audioBufferList.find(audioBuffer => audioBuffer.filename === this.audioList[this.cursor].filename);
+      const buffer = await (async audioBuffer => {
+        if (audioBuffer) return audioBuffer.buffer;
+        else {
+          const buffer = await context.decodeAudioData(this.audioList[this.cursor].data.buffer).catch(err => console.dir(err));
+          this.audioBufferList.push({
+            filename: this.audioList[this.cursor].filename,
+            buffer,
+          });
+          return buffer;
+        }
+      })(audioBuffer);
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      source.start(0);
       this.played = true;
-    },
+   },
     next() {
-      if (this.inspections.length === this.cursor + 1) return;
       this.played = false;
-      this.cursor = internalNext(this.inspections, this.cursor);
+      this.cursor = internalNext(this.audioList, this.cursor);
     },
     back() {
-      if (this.cursor === 0) return;
       this.played = false;
-      this.cursor = internalBack(this.inspections, this.cursor);
+      this.cursor = internalBack(this.audioList, this.cursor);
     },
     answer(index, result) {
-      const origin = this.inspections[this.cursor].statuses;
-      this.inspections[this.cursor].statuses = origin.map((s, i) => {
+      const origin = this.audioList[this.cursor].statuses;
+      this.audioList[this.cursor].statuses = origin.map((status, i) => {
         if (i === index) return result;
-        return s;
+        return status;
       });
 
-      if (this.inspections[this.cursor].statuses.some(status => status === '')) return;
+      if (this.audioList[this.cursor].statuses.some(status => status === '')) return;
 
-      const finish = this.inspections.find(inspection => !inspection.statuses.every(status => status !== '')) == null;
+      const finish = this.audioList.find(audio => !audio.statuses.every(status => status !== '')) == null;
 
       if (finish) {
         alert('Finished');
+        this.finish();
         this.$router.push({
           name: this.backPath,
         });
@@ -286,7 +289,9 @@ export default {
       }
 
       this.played = false;
-      this.cursor = internalNext(this.inspections, this.cursor);
+      this.cursor = internalNext(this.audioList, this.cursor);
+    },
+    finish() {
     },
     browserBack() {
       this.$router.push({
@@ -295,7 +300,6 @@ export default {
     },
   },
   updated() {
-    this.sound = this.inspections[this.cursor].fullpath;
     this.ready = true;
   },
 };
