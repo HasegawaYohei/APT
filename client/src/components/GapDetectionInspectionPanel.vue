@@ -168,8 +168,8 @@
 </template>
 
 <script>
-import Api from '../services/Api';
-import { arrayShuffle } from '../services/Array';
+import Api from '../services/ApiService';
+import { arrayShuffle } from '../services/ArrayService';
 
 function sleep(msec) {
   return new Promise(resolve => setTimeout(resolve, msec));

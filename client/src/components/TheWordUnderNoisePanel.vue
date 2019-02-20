@@ -223,8 +223,8 @@
 </template>
 
 <script>
-import Api from '../services/Api';
-import { arrayShuffle, flatten, splitArray } from '../services/Array';
+import Api from '../services/ApiService';
+import { arrayShuffle, flatten, splitArray } from '../services/ArrayService';
 
 function buildInspections(sounds) {
   return sounds.map(sound => {

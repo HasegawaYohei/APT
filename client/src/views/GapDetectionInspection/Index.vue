@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Api from '../../services/Api';
+import Api from '../../services/ApiService';
 import GapDetectionInspectionPanel from '../../components/GapDetectionInspectionPanel.vue';
 
 export default {

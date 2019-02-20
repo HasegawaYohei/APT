@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Api from '../../services/Api';
+import Api from '../../services/ApiService';
 import TheWordUnderNoisePanel from '../../components/TheWordUnderNoisePanel.vue';
 
 export default {
