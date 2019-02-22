@@ -85,12 +85,20 @@ export function generateResultListHeader(columnNumber) {
   return [];
 }
 
-export function generateAudioList(audioDirPath) {
-  return getAudioFile(audioDirPath).map((audioFIle, i) => ({
-    filename: audioFIle.filename,
-    data: audioFIle.data,
-    cursor: i,
+export async function generateAudioList(audioDirPath) {
+  const context = new AudioContext();
+  const audioList = await Promise.all(getAudioFile(audioDirPath).map(async (audioFile, i) => {
+    const buffer = await context.decodeAudioData(audioFile.data.buffer);
+
+    return {
+      filename: audioFile.filename,
+      data: audioFile.data,
+      cursor: i,
+      buffer,
+    };
   }));
+
+  return audioList;
 }
 
 export function generateResultList(audioList, columnNumber) {
@@ -99,4 +107,18 @@ export function generateResultList(audioList, columnNumber) {
     statuses: Array.from({ length: columnNumber }).map(() => ''),
     cursor: i,
   }));
+}
+
+export function playAudio(audioBuffer) {
+  const context = new AudioContext();
+  const source = context.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.start(0);
+  source.onended = () => {
+    source.onended = null;
+    source.stop(0);
+    source.disconnect();
+    context.close();
+  };
 }
