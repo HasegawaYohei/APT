@@ -16,7 +16,7 @@
             :large="true"
             class="btn-custom"
             :disabled="played"
-            @click="back"
+            @click="moveCursor('back')"
              >戻</v-btn>
         </v-flex>
         <v-flex xs6>
@@ -27,44 +27,34 @@
             :disable="ready"
             @click="play"
              >再生</v-btn>
-          <audio id="sound">
-            <source :src="sound" type="audio/wav">
-          </audio>
         </v-flex>
         <v-flex xs3>
           <v-btn
             :large="true"
             class="btn-custom"
             :disabled="played"
-            @click="next"
+            @click="moveCursor('next')"
              >次</v-btn>
         </v-flex>
       </v-layout>
-      <v-layout text-xs-center wrap>
-        <v-flex xs6>
-          <v-btn
-            :large="true"
-            color="error"
-            class="btn-custom"
-            :disabled="!played"
-            @click="wrong"
-             >誤答</v-btn>
-        </v-flex>
-        <v-flex xs6>
-          <v-btn
-            :large="true"
-            color="success"
-            class="btn-custom"
-            :disabled="!played"
-            @click="correct"
-             >正答</v-btn>
-        </v-flex>
+      <v-layout text-xs-center>
+          <v-flex grow v-for="(answerButton, i) in answerButtonList" :key="i">
+            <v-btn
+              :large="true"
+              :color="answerButton.color"
+              class="btn-custom"
+              :disabled="!played"
+              @click="answer(answerButton.statusIndex, answerButton.answer)"
+            >
+              {{answerButton.label}}
+            </v-btn>
+          </v-flex>
       </v-layout>
     </v-list>
 
     <v-list>
       <v-layout>
-        <v-flex xs-6>
+        <v-flex xs6>
           <v-list-tile
           >
             <v-list-tile-content>
@@ -75,50 +65,38 @@
           <v-divider
           ></v-divider>
         </v-flex>
-        <v-flex xs-6>
-          <v-list-tile
-          >
+        <v-flex grow v-for="(headerTitle, i) in resultListHeader" :key="i">
+          <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title>状態</v-list-tile-title>
+              <v-list-tile-title>{{headerTitle}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-
-          <v-divider
-          ></v-divider>
+          <v-divider></v-divider>
         </v-flex>
       </v-layout>
       <div class="result-list">
-        <template v-for="(inspection, index) in inspections">
+        <template v-for="(result, index) in resultList">
           <v-layout :key="index">
-            <v-flex xs-6>
+            <v-flex xs6>
               <v-list-tile
-                :key="inspection.filename"
+                :key="result.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.filename"></v-list-tile-title>
+                  <v-list-tile-title v-html="result.filename"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
-
-              <v-divider
-                v-if="inspection.divider"
-                :key="index"
-              ></v-divider>
+              <v-divider></v-divider>
             </v-flex>
-            <v-flex xs-6>
+            <v-flex grow v-for="(status, i) in result.statuses" :key="i">
               <v-list-tile
-                :key="inspection.filename"
                 :class="cursor === index ? 'active' : 'disactive'"
               >
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="inspection.status"></v-list-tile-title>
+                  <v-list-tile-title>{{status}}</v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
-
-              <v-divider
-                v-if="inspection.divider"
-                :key="index"
-              ></v-divider>
+              <v-divider></v-divider>
             </v-flex>
           </v-layout>
         </template>
@@ -128,88 +106,76 @@
 </template>
 
 <script>
-const internalNext = (inspections, cursor) => {
-  const inspection = inspections.slice(cursor + 1, inspections.lenght).find(inspection => inspection.status === '');
-
-  if (inspection == null || inspection.cursor == null) return internalBack(inspections, cursor + 1);
-  return inspection.cursor;
-};
-
-const internalBack = (inspections, cursor) => {
-  const inspection = inspections.slice(0, cursor).filter(inspection => inspection.status === '').pop();
-
-  if (inspection == null || inspection.cursor == null) return internalNext(inspections, cursor - 1);
-  return inspection.cursor;
-};
-
-const answer = (data) => {
-  const finish = data.inspections.find(inspection => inspection.status === '') == null;
-
-  if (finish) {
-    alert('Finished!!');
-    data.$router.push({
-        name: data.backPath,
-      });
-    return;
-  }
-
-  data.played = false;
-  data.cursor = internalNext(data.inspections, data.cursor);
-};
+import { internalNext, internalBack } from '../../services/InspectionServie';
 
 export default {
   props: [
     'title',
     'backPath',
-    'inspections',
+    'audioDirPath',
+    'answerButtonList',
+    'resultListHeader',
+    'audioList',
+    'resultList',
   ],
   data: () => ({
     cursor: 0,
     sound: '',
     played: false,
     ready: false,
+    audioBufferList: [],
   }),
-  watch: {
-    cursor: function () {
-      if (this.inspections == null || this.inspections.length === 0) return;
-      this.sound = this.inspections[this.cursor].fullpath;
-    },
-  },
   methods: {
-    play() {
-      const audio = document.getElementById('sound');
-      audio.load();
-      audio.play();
+    async play() {
+      const context = new AudioContext();
+      const audioBuffer = this.audioBufferList
+        .find(_audioBuffer => _audioBuffer.filename === this.audioList[this.cursor].filename);
+      const buffer = await (async (_audioBuffer) => {
+        if (_audioBuffer) return _audioBuffer.buffer;
+        const audioArray = await context.decodeAudioData(this.audioList[this.cursor].data.buffer);
+        this.audioBufferList.push({
+          filename: this.audioList[this.cursor].filename,
+          buffer: audioArray,
+        });
+        return audioArray;
+      })(audioBuffer);
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      source.start(0);
       this.played = true;
-      this.inspections[this.cursor].status = '再生中';
     },
-    next() {
-      if (this.inspections.length === this.cursor + 1) return;
+    moveCursor(direction) {
       this.played = false;
-      this.cursor = internalNext(this.inspections, this.cursor);
+      this.cursor = ((_direction) => {
+        if (_direction === 'next') return internalNext(this.resultList, this.cursor);
+        return internalBack(this.resultList, this.cursor);
+      })(direction);
     },
-    back() {
-      if (this.cursor === 0) return;
+    answer(statusIndex, result) {
+      const { statuses } = this.resultList[this.cursor];
+      this.resultList[this.cursor].statuses = statuses.map((status, i) => {
+        if (i === statusIndex) return result ? '正答' : '誤答';
+        return status;
+      });
+
+      if (this.resultList[this.cursor].statuses.some(status => status === '')) return;
+
+      const finish = this.resultList.find(_result => !_result.statuses.every(status => status !== '')) == null;
+
+      if (finish) {
+        alert('finish');
+        return;
+      }
+
       this.played = false;
-      this.cursor = internalBack(this.inspections, this.cursor);
-    },
-    wrong() {
-      this.inspections[this.cursor].status = '誤答';
-      answer(this);
-    },
-    correct() {
-      this.inspections[this.cursor].status = '正答';
-      answer(this);
+      this.cursor = internalNext(this.resultList, this.cursor);
     },
     browserBack() {
       this.$router.push({
         name: this.backPath,
       });
     },
-  },
-  updated() {
-    this.sound = this.inspections[this.cursor].fullpath;
-    this.ready = true;
   },
 };
 </script>
