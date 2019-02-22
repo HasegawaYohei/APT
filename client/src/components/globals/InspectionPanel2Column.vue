@@ -24,7 +24,6 @@
             color="info"
             :large="true"
             class="btn-custom"
-            :disable="ready"
             @click="play"
              >再生</v-btn>
         </v-flex>
@@ -106,7 +105,7 @@
 </template>
 
 <script>
-import { internalNext, internalBack } from '../../services/InspectionServie';
+import { internalNext, internalBack, playAudio } from '../../services/InspectionServie';
 
 export default {
   props: [
@@ -120,29 +119,12 @@ export default {
   ],
   data: () => ({
     cursor: 0,
-    sound: '',
     played: false,
-    ready: false,
-    audioBufferList: [],
   }),
   methods: {
-    async play() {
-      const context = new AudioContext();
-      const audioBuffer = this.audioBufferList
-        .find(_audioBuffer => _audioBuffer.filename === this.audioList[this.cursor].filename);
-      const buffer = await (async (_audioBuffer) => {
-        if (_audioBuffer) return _audioBuffer.buffer;
-        const audioArray = await context.decodeAudioData(this.audioList[this.cursor].data.buffer);
-        this.audioBufferList.push({
-          filename: this.audioList[this.cursor].filename,
-          buffer: audioArray,
-        });
-        return audioArray;
-      })(audioBuffer);
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      source.connect(context.destination);
-      source.start(0);
+    play() {
+      const audioBuffer = this.audioList.find(_audioBuffer => _audioBuffer.cursor === this.cursor).buffer;
+      playAudio(audioBuffer);
       this.played = true;
     },
     moveCursor(direction) {
