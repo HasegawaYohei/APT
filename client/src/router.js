@@ -20,27 +20,57 @@ export default new Router({
     {
       path: '/dichotic-listening-inspection/single-ear-single-sound',
       name: 'singleEarSingleSound',
-      component: () => import('./views/DichoticListeningInspection/SingleEarSingleSound.vue'),
+      props: {
+        title: '単耳単音節',
+        backPath: 'dichoticListeningInspection',
+        audioDirPath: './public/音声情報/両耳分離聴/単耳単音節/',
+        columnNumber: 1,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/dichotic-listening-inspection/single-ear-single-word',
       name: 'singleEarSingleWord',
-      component: () => import('./views/DichoticListeningInspection/SingleEarSingleWord.vue'),
+      props: {
+        title: '単耳単語',
+        backPath: 'dichoticListeningInspection',
+        audioDirPath: './public/音声情報/両耳分離聴/単耳単語/',
+        columnNumber: 1,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/dichotic-listening-inspection/single-sound',
       name: 'singleSound',
-      component: () => import('./views/DichoticListeningInspection/SingleSound.vue'),
+      props: {
+        title: '単音節',
+        backPath: 'dichoticListeningInspection',
+        audioDirPath: './public/音声情報/両耳分離聴/単音節/',
+        columnNumber: 2,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/dichotic-listening-inspection/word',
       name: 'word',
+      props: {
+        title: '単語',
+        backPath: 'dichoticListeningInspection',
+        audioDirPath: './public/音声情報/両耳分離聴/単語/',
+        columnNumber: 2,
+      },
       component: () => import('./views/DichoticListeningInspection/Word.vue'),
     },
     {
       path: '/dichotic-listening-inspection/sentence',
       name: 'sentence',
-      component: () => import('./views/DichoticListeningInspection/Sentence.vue'),
+      props: {
+        title: '文',
+        backPath: 'dichoticListeningInspection',
+        audioDirPath: './public/音声情報/両耳分離聴/文/',
+        columnNumber: 2,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/fastsound-listening-inspection',
@@ -50,42 +80,87 @@ export default new Router({
     {
       path: '/fastsound-listening-inspection/normal',
       name: 'normal',
-      component: () => import('./views/FastSoundListeningInspection/Normal.vue'),
+      props: {
+        title: '通常発話文',
+        backPath: 'fastsoundListeningInspection',
+        audioDirPath: './public/音声情報/早口音声聴取/通常/',
+        columnNumber: 3,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/fastsound-listening-inspection/fast',
       name: 'fast',
-      component: () => import('./views/FastSoundListeningInspection/Fast.vue'),
+      props: {
+        title: '1.5倍速',
+        backPath: 'fastsoundListeningInspection',
+        audioDirPath: './public/音声情報/早口音声聴取/半倍速/',
+        columnNumber: 3,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/fastsound-listening-inspection/moreFast',
       name: 'moreFast',
-      component: () => import('./views/FastSoundListeningInspection/MoreFast.vue'),
+      props: {
+        title: '2倍速',
+        backPath: 'fastsoundListeningInspection',
+        audioDirPath: './public/音声情報/早口音声聴取/2倍速/',
+        columnNumber: 3,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/gap-detection-inspection',
       name: 'gapDetectionInspection',
+      props: {
+        title: 'ギャップ検出閾値検査',
+        backPath: 'home',
+        audioDirPath: './public/音声情報/ギャップ検出/',
+      },
       component: () => import('./views/GapDetectionInspection/Index.vue'),
-    },
-    {
-      path: '/both-ears-alternating-inspection',
-      name: 'bothEarsAlternatingInspection',
-      component: () => import('./views/BothEarsAlternatingInspection/Index.vue'),
-    },
-    {
-      path: '/multiple-sound-listening-inspection',
-      name: 'multipleSoundListeningInspection',
-      component: () => import('./views/MultipleSoundListeningInspection/Index.vue'),
     },
     {
       path: '/the-word-under-noise-inspection',
       name: 'theWordUnderNoiseInspection',
+      props: {
+        title: '雑音下単語聴取検査',
+        backPath: 'home',
+        audioDirPath: './public/音声情報/雑音下単語聴取/',
+      },
       component: () => import('./views/TheWordUnderNoiseInspection/Index.vue'),
+    },
+    {
+      path: '/both-ears-alternating-inspection',
+      name: 'bothEarsAlternatingInspection',
+      props: {
+        title: '両耳交互聴取検査',
+        backPath: 'home',
+        audioDirPath: './public/音声情報/両耳交互聴/',
+        columnNumber: 3,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/auditory-attention-inspection',
       name: 'auditoryAttentionInspection',
+      props: {
+        title: '聴覚的注意検査',
+        backPath: 'home',
+        audioDirPath: './public/音声情報/聴覚的注意/',
+      },
       component: () => import('./views/AuditoryAttentionInspection/Index.vue'),
+    },
+    {
+      path: '/multiple-sound-listening-inspection',
+      name: 'multipleSoundListeningInspection',
+      props: {
+        title: '複数音声下聴取',
+        backPath: 'home',
+        audioDirPath: './public/音声情報/複数音声聴取/',
+        columnNumber: 3,
+      },
+      component: () => import('./views/Inspection.vue'),
     },
   ],
 });
