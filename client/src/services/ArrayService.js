@@ -1,16 +1,14 @@
-export function arrayShuffle(array) {
+export function shuffleArray(array) {
   for (let i = array.length - 1; i >= 0; i -= 1) {
-    let rand = Math.floor(Math.random() * (i + 1));
+    const rand = Math.floor(Math.random() * (i + 1));
     [array[i], array[rand]] = [array[rand], array[i]];
   }
 
   return array;
 }
 
-export function flatten(array) {
-  return array.reduce((a, c) => {
-    return Array.isArray(c) ? a.concat(flatten(c)) : a.concat(c);
-  }, []);
+export function flattenArray(array) {
+  return array.reduce((a, c) => (Array.isArray(c) ? a.concat(flattenArray(c)) : a.concat(c)), []);
 }
 
 export function splitArray(array, part) {
