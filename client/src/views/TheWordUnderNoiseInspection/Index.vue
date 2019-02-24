@@ -1,18 +1,20 @@
 <template>
   <TheWordUnderNoisePanel
-    title="雑音下単語聴取検査"
-    backPath="home"
-    :inspections=inspections />
+    :title="title"
+    :backPath="backPath"
+    :audioDirPath="audioDirPath"
+  />
 </template>
 
 <script>
-import Api from '../../services/ApiService';
 import TheWordUnderNoisePanel from '../../components/TheWordUnderNoisePanel.vue';
 
 export default {
-  data: () => ({
-    inspections: [],
-  }),
+  props: [
+    'title',
+    'backPath',
+    'audioDirPath',
+  ],
   components: { TheWordUnderNoisePanel },
 };
 </script>

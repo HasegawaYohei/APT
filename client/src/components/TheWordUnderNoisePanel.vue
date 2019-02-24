@@ -6,6 +6,12 @@
           <v-icon>arrow_back</v-icon>
         </v-btn>
         <v-toolbar-title>{{title}}</v-toolbar-title>
+        <v-btn
+          :large="true"
+          color="warning"
+          :style="{marginLeft: 'auto'}"
+          @click="interruption"
+          >中断終了</v-btn>
       </v-toolbar>
     </v-card>
 
@@ -25,9 +31,6 @@
           :disabled="played"
           @click="reOrder"
           >番号再生成</v-btn>
-          <audio id="sound">
-            <source :src="sound" type="audio/wav">
-          </audio>
       </v-flex>
       <v-flex xs3>
         <v-btn
@@ -47,9 +50,6 @@
           :disabled="!ready"
           @click="play"
           >再生</v-btn>
-        <audio id="sound">
-          <source :src="sound" type="audio/wav">
-        </audio>
       </v-flex>
     </v-layout>
     <div v-if="ready">
@@ -76,19 +76,21 @@
           -15dB
         </v-flex>
       </v-layout>
-      <template v-for="(row, i) in inspectionTable">
+      <template v-for="(row, i) in audioTable">
         <v-layout text-xs-center justify-center mt-3 wrap :key="i">
           <v-flex xs1></v-flex>
-          <v-flex xs1 v-for="(inspection, j) in row">
+          <v-flex xs1 v-for="(audio, j) in row" :key="j">
             <div
               :style="{
-                background: inspection.label === '済' ? '#fff' : getRgb(remainingInspectionNumber, inspection.label),
+                background: audio.label === '済'
+                  ? '#fff'
+                  : getRgb(remainingAudioNumber, audio.label),
                 color: '#252525',
                 fontSize: '18px',
                 padding: '8px 0'
               }"
             >
-              {{inspection.label}}
+              {{audio.label}}
             </div>
           </v-flex>
         </v-layout>
@@ -223,173 +225,132 @@
 </template>
 
 <script>
-import Api from '../services/ApiService';
-import { arrayShuffle, flatten, splitArray } from '../services/ArrayService';
+import { generateAudioList, playAudio } from '../services/InspectionService';
+import { shuffleArray, flattenArray, splitArray } from '../services/ArrayService';
 
-function buildInspections(sounds) {
-  return sounds.map(sound => {
-    return {
-      sound,
-      done: false,
-    };
-  });
+function buildAudioList(audioListOrigin) {
+  return audioListOrigin.map(audio => ({
+    ...audio,
+    done: false,
+  }));
 }
 
-function buildInspectionTable(inspections, remainingInspectionNumber) {
-  const numberArray = arrayShuffle(Array.from( {length: remainingInspectionNumber } ).map((_, i) => i));
-  const labeledInspections = inspections.map(inspection => {
-    return {
-      inspection,
-      label: inspection.done ? "済" : numberArray.pop()
-    };
-  });
+function buildAudioTable(audioList, remainingAudioNumber) {
+  const numberArray = shuffleArray(Array.from({ length: remainingAudioNumber }).map((_, i) => i));
+  const labeledAudioList = audioList.map(audio => ({
+    audio,
+    label: audio.done ? '済' : numberArray.pop(),
+  }));
 
-  return splitArray(labeledInspections, 6);
+  return splitArray(labeledAudioList, 6);
 }
 
-function updateInspectionTableLabel(inspectionTable) {
-  return inspectionTable.map(labeledInspectionArray => {
-    return labeledInspectionArray.map(labeledInspection => {
-      return {
-        inspection: labeledInspection.inspection,
-        label: labeledInspection.inspection.done ? "済" : labeledInspection.label - 1
-      };
-    });
-  });
+function updateAudioTableLabel(audioTable) {
+  return audioTable.map(labeledAudioArray => labeledAudioArray.map(labeledAudio => ({
+    audio: labeledAudio.audio,
+    label: labeledAudio.audio.done
+      ? '済'
+      : labeledAudio.label - 1,
+  })));
 }
 
-function recordAnswer(a, b) {
-
+function correctPercent() {
+  if (!(this.correctNumber || this.wrongNumber)) return 0;
+  return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
 }
+
+function buildResultMapObject(condition) {
+  return {
+    condition,
+    correctNumber: 0,
+    wrongNumber: 0,
+    correctPercent,
+  };
+}
+
+// function recordAnswer(a, b) {
+
+// }
 
 export default {
   props: [
     'title',
     'backPath',
+    'audioDirPath',
   ],
   data: () => ({
     ready: false,
     played: false,
-    sound: '',
-    currentInspection: null,
-    inspections: [],
-    inspectionTable: [],
+    currentAudio: null,
+    audioList: [],
+    audioTable: [],
     resultList: [],
     resultMapList: [
-      {
-        condition: "+10dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
-      {
-        condition: "+05dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
-      {
-        condition: "+00dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
-      {
-        condition: "-05dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
-      {
-        condition: "-10dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
-      {
-        condition: "-15dB",
-        correctNumber: 0,
-        wrongNumber: 0,
-        correctPercent() {
-          if (!(this.correctNumber || this.wrongNumber)) return 0;
-          return (this.correctNumber / (this.correctNumber + this.wrongNumber)) * 100;
-        },
-      },
+      buildResultMapObject('+10dB'),
+      buildResultMapObject('+05dB'),
+      buildResultMapObject('+00dB'),
+      buildResultMapObject('-05dB'),
+      buildResultMapObject('-10dB'),
+      buildResultMapObject('-15dB'),
     ],
-    remainingInspectionNumbern: 36,
+    remainingAudioNumbern: 36,
     answerNumber: 0,
   }),
   methods: {
     play() {
-      const audio = document.getElementById('sound');
-
-      this.currentInspection = this.currentInspection ? this.currentInspection : flatten(this.inspectionTable).find(v => v.label === 0);
+      this.currentAudio = this.currentAudio
+        ? this.currentAudio
+        : flattenArray(this.audioTable).find(v => v.label === 0);
 
       if (!this.played) {
         this.played = true;
         this.resultList.unshift({
-          filename: this.currentInspection.inspection.sound.filename,
+          filename: this.currentAudio.audio.filename,
         });
       }
 
-      this.currentInspection.label = "再"
-      this.sound = this.currentInspection.inspection.sound.fullpath;
-      audio.load();
-      audio.play();
+      this.currentAudio.label = '再';
+      playAudio(this.currentAudio.audio.buffer);
     },
     reOrder() {
-      this.inspectionTable = buildInspectionTable(this.inspections, this.remainingInspectionNumber)
+      this.audioTable = buildAudioTable(this.audioList, this.remainingAudioNumber);
+    },
+    answer(isCorrect) {
+      this.currentAudio.audio.done = true;
+      this.remainingAudioNumber -= 1;
+      this.audioTable = updateAudioTableLabel(this.audioTable);
+      this.resultList[0].result = isCorrect ? '正' : '誤';
+      const condition = this.currentAudio.audio.filename.match(/(\+|-)[0-9]{1,2}dB/)[0];
+      const resultMap = this.resultMapList.find(_resultMap => _resultMap.condition === condition);
+
+      this.answerNumber += 1;
+      this.currentAudio = null;
+      this.played = false;
+
+      if (isCorrect) resultMap.correctNumber += 1;
+      else resultMap.wrongNumber += 1;
+    },
+    getRgb(remainingAudioNumber, audioNumber) {
+      const n = ((remainingAudioNumber - audioNumber) / remainingAudioNumber) * 255;
+      return `rgb(${285 - n},${375 - n},${255})`;
+    },
+    getReverseRgb(remainingAudioNumber, audioNumber) {
+      const n = 255 - ((remainingAudioNumber - audioNumber) / remainingAudioNumber) * 255;
+      return `rgb(${n},${n},${0})`;
+    },
+    interruption() {
     },
     browserBack() {
       this.$router.push({
         name: this.backPath,
       });
     },
-    answer(isCorrect) {
-      this.currentInspection.inspection.done = true;
-      this.remainingInspectionNumber -= 1;
-      this.inspectionTable = updateInspectionTableLabel(this.inspectionTable);
-      this.resultList[0].result = isCorrect ? '正' : '誤';
-      const condition = this.currentInspection.inspection.sound.filename.match(/(\+|\-)[0-9]{1,2}dB/)[0];
-      const resultMap = this.resultMapList.find(resultMap => resultMap.condition === condition);
-
-      this.answerNumber += 1;
-      this.currentInspection = null;
-      this.played = false;
-
-      if (isCorrect) resultMap.correctNumber += 1;
-      else resultMap.wrongNumber += 1;
-    },
-    getRgb(remainingInspectionNumber, inspectionNumber) {
-      const n = ((remainingInspectionNumber - inspectionNumber) / remainingInspectionNumber) * 255;
-      return `rgb(${285 - n},${375 - n},${255})`;
-    },
-    getReverseRgb(remainingInspectionNumber, inspectionNumber) {
-      const n = 255 - ((remainingInspectionNumber - inspectionNumber) / remainingInspectionNumber) * 255;
-      return `rgb(${n},${n},${0})`;
-    },
   },
-  async mounted() {
-    const sounds = (await Api.get('/the-word-under-noise-inspection')).data;
-    this.remainingInspectionNumber = sounds.length;
-    this.inspections = buildInspections(sounds);
-    this.inspectionTable = buildInspectionTable(this.inspections, this.remainingInspectionNumber);
+  async created() {
+    const audioListOrigin = await generateAudioList(this.audioDirPath);
+    this.audioList = buildAudioList(audioListOrigin);
+    this.remainingAudioNumber = this.audioList.length;
+    this.audioTable = buildAudioTable(this.audioList, this.remainingAudioNumber);
     this.ready = true;
   },
 };
