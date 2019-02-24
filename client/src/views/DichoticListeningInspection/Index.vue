@@ -2,7 +2,12 @@
   <v-container>
     <v-layout text-xs-center wrap>
       <v-flex offset-xs2 xs8>
-        <ListPanel :title="title" :inspections="inspections" :browserBack="browserBack" :isMain="false" />
+        <ListPanel
+          :title="title"
+          :inspections="inspections"
+          :browserBack="browserBack"
+          :isMain="false"
+        />
       </v-flex>
     </v-layout>
   </v-container>

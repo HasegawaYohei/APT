@@ -41,7 +41,7 @@ export default {
       this.$router.push({
         name: this.backPath,
       });
-    }
+    },
   },
 };
 </script>
