@@ -6,6 +6,12 @@
           <v-icon>arrow_back</v-icon>
         </v-btn>
         <v-toolbar-title>{{title}}</v-toolbar-title>
+        <v-btn
+          :large="true"
+          color="warning"
+          :style="{marginLeft: 'auto'}"
+          @click="interruption"
+          >中断終了</v-btn>
       </v-toolbar>
     </v-card>
 
@@ -105,7 +111,7 @@
 </template>
 
 <script>
-import { internalNext, internalBack, playAudio } from '../../services/InspectionServie';
+import { internalNext, internalBack, playAudio } from '../../services/InspectionService';
 
 export default {
   props: [
@@ -123,7 +129,8 @@ export default {
   }),
   methods: {
     play() {
-      const audioBuffer = this.audioList.find(_audioBuffer => _audioBuffer.cursor === this.cursor).buffer;
+      const audioBuffer = this.audioList
+        .find(_audioBuffer => _audioBuffer.cursor === this.cursor).buffer;
       playAudio(audioBuffer);
       this.played = true;
     },
@@ -152,6 +159,8 @@ export default {
 
       this.played = false;
       this.cursor = internalNext(this.resultList, this.cursor);
+    },
+    interruption() {
     },
     browserBack() {
       this.$router.push({
