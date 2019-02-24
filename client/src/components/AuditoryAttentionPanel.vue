@@ -19,6 +19,7 @@
       <v-flex xs12>
         1の後に「9」が出てきたら、スペースキーを押してください
         <v-btn
+          color="info"
           class="btn-custom"
           :large="true"
           :disabled="!ready"

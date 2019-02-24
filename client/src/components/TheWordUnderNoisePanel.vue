@@ -15,7 +15,17 @@
       </v-toolbar>
     </v-card>
 
-    <v-layout text-xs-center mt-3 wrap>
+    <v-layout justify-center text-xs-center mt-2 wrap>
+      <v-flex xs6>
+        <v-btn
+          class="btn-custom"
+          :large="true"
+          :disabled="played"
+          @click="reOrder"
+          >番号再生成</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout text-xs-center justify-center mt-2 wrap>
       <v-flex xs3>
         <v-btn
           color="error"
@@ -26,11 +36,12 @@
       </v-flex>
       <v-flex xs6>
         <v-btn
+          color="info"
           class="btn-custom"
           :large="true"
-          :disabled="played"
-          @click="reOrder"
-          >番号再生成</v-btn>
+          :disabled="!ready"
+          @click="play"
+          >再生</v-btn>
       </v-flex>
       <v-flex xs3>
         <v-btn
@@ -39,17 +50,6 @@
           class="btn-custom"
           @click="answer(true)"
             >正答</v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout text-xs-center justify-center mt-3 wrap>
-      <v-flex xs12>
-        <v-btn
-          color="info"
-          class="btn-custom"
-          :large="true"
-          :disabled="!ready"
-          @click="play"
-          >再生</v-btn>
       </v-flex>
     </v-layout>
     <div v-if="ready">
@@ -87,7 +87,7 @@
                   : getRgb(remainingAudioNumber, audio.label),
                 color: '#252525',
                 fontSize: '18px',
-                padding: '8px 0'
+                padding: '3px 0'
               }"
             >
               {{audio.label}}
@@ -357,6 +357,8 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.result-list
+  height 360px
 .btn-custom
   width 90%
 </style>
