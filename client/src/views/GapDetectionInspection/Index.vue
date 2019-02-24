@@ -1,25 +1,30 @@
 <template>
   <div>
     <GapDetectionInspectionPanel
-    title="ギャップ検出閾値検査"
-    backPath="home"
-    :inspections=inspections />
+      :title="title"
+      :backPath="backPath"
+      :audioList="audioList"
+    />
   </div>
 </template>
 
 <script>
-import Api from '../../services/ApiService';
 import GapDetectionInspectionPanel from '../../components/GapDetectionInspectionPanel.vue';
+import { generateAudioList } from '../../services/InspectionService';
 
 export default {
+  props: [
+    'title',
+    'backPath',
+    'audioDirPath',
+  ],
   data: () => ({
-    inspections: [],
+    audioList: [],
   }),
   async created() {
-    const result = (await Api.get('/gap-detection-inspection')).data;
-    this.inspections = result;
+    this.audioList = await generateAudioList(this.audioDirPath);
   },
-  components: { GapDetectionInspectionPanel }
+  components: { GapDetectionInspectionPanel },
 };
 </script>
 
