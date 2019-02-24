@@ -59,7 +59,7 @@ export default new Router({
         audioDirPath: './public/音声情報/両耳分離聴/単語/',
         columnNumber: 2,
       },
-      component: () => import('./views/DichoticListeningInspection/Word.vue'),
+      component: () => import('./views/Inspection.vue'),
     },
     {
       path: '/dichotic-listening-inspection/sentence',
