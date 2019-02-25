@@ -10,7 +10,7 @@
           :large="true"
           color="warning"
           :style="{marginLeft: 'auto'}"
-          @click="interruption"
+          @click="finish"
           >中断終了</v-btn>
       </v-toolbar>
     </v-card>
@@ -170,7 +170,9 @@
 </template>
 
 <script>
-import { playAudio } from '../services/InspectionService';
+/* eslint no-await-in-loop: 0 */
+
+import { playAudio, outputCsvForGapInspection } from '../services/InspectionService';
 
 function sleep(msec) {
   return new Promise(resolve => setTimeout(resolve, msec));
@@ -238,6 +240,7 @@ export default {
         correctIndex: this.correctIndex + 1,
         selectedNumber: number + 1,
         result: correct ? '正' : '誤',
+        audioIndex: this.audioIndex,
       });
 
       if (correct) {
@@ -266,13 +269,9 @@ export default {
       this.audioIndex += levelBlockMap[this.levelBlock];
       this.levelBlock += 1;
     },
-    finish() {
-      alert(`最終レベル: L${this.audioIndex - 1}`);
-      this.$router.push({
-        name: this.backPath,
-      });
-    },
-    interruption() {
+    async finish() {
+      await outputCsvForGapInspection(this.title, this.resultList);
+      this.browserBack();
     },
     browserBack() {
       this.$router.push({
@@ -288,9 +287,9 @@ export default {
   width 90%
 .active
   border solid 2px #F50057 !important
-.selected
-  background #f50057 !important
-  color #fff
 .latest-answer
   background-color #BBDEFB
+.result-list
+  height 560px
+  overflow scroll !important
 </style>
