@@ -31,6 +31,7 @@
           color="error"
           :large="true"
           class="btn-custom"
+          :disabled="!played"
           @click="answer(false)"
             >誤答</v-btn>
       </v-flex>
@@ -48,6 +49,7 @@
           color="success"
           :large="true"
           class="btn-custom"
+          :disabled="!played"
           @click="answer(true)"
             >正答</v-btn>
       </v-flex>
@@ -358,7 +360,7 @@ export default {
 
 <style scoped lang="stylus">
 .result-list
-  height 360px
+  height 300px
 .btn-custom
   width 90%
 </style>
