@@ -1,5 +1,6 @@
 <template>
   <AuditoryAttentionPanel
+    class="full"
     :title="title"
     :backPath="backPath"
     :audioDirPath="audioDirPath"
@@ -19,5 +20,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="stylus">
+.full
+  width 100%
+  height 100%
 </style>

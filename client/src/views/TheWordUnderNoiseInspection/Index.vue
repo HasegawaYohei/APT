@@ -1,5 +1,6 @@
 <template>
   <TheWordUnderNoisePanel
+    class="full"
     :title="title"
     :backPath="backPath"
     :audioDirPath="audioDirPath"
@@ -23,4 +24,7 @@ export default {
 .result-list
   height  380px
   overflow scroll
+.full
+  width 100%
+  height 100%
 </style>

@@ -1,12 +1,10 @@
 <template>
   <v-card>
     <v-toolbar color="cyan" dark>
-      <div v-if="!isMain" class="ml-minus">
-        <v-btn icon class="hidden-xs-only" @click="browserBack">
-          <v-icon>arrow_back</v-icon>
-        </v-btn>
-      </div>
-      <v-toolbar-title class="ml-0">{{title}}</v-toolbar-title>
+      <v-btn v-if="!isMain" icon class="hidden-xs-only" @click="browserBack">
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
+      <v-toolbar-title>{{title}}</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
 

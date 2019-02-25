@@ -1,5 +1,6 @@
 <template>
   <InspectionPanel
+    class="full"
     :title="title"
     :backPath="backPath"
     :answerButtonList="answerButtonList"
@@ -38,3 +39,9 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="stylus">
+.full
+  width 100%
+  height 100%
+</style>

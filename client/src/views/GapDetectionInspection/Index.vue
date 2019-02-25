@@ -1,11 +1,10 @@
 <template>
-  <div>
-    <GapDetectionInspectionPanel
-      :title="title"
-      :backPath="backPath"
-      :audioList="audioList"
-    />
-  </div>
+  <GapDetectionInspectionPanel
+    class="full"
+    :title="title"
+    :backPath="backPath"
+    :audioList="audioList"
+  />
 </template>
 
 <script>
@@ -28,8 +27,11 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
 .result-list
   height  610px
   overflow scroll
+.full
+  width 100%
+  height 100%
 </style>

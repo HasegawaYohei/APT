@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container fluid ma-0 pa-0 fill-height>
     <v-layout text-xs-center wrap>
-      <v-flex offset-xs2 xs8>
+      <v-flex xs12>
         <ListPanel
           :title="title"
           :inspections="inspections"
@@ -60,9 +60,3 @@ export default {
   },
 };
 </script>
-
-<style lang="stylus">
-.result-list
-  height  660px
-  overflow scroll
-</style>
