@@ -10,7 +10,7 @@
           :large="true"
           color="warning"
           :style="{marginLeft: 'auto'}"
-          @click="interruption"
+          @click="finish"
           >中断終了</v-btn>
       </v-toolbar>
     </v-card>
@@ -22,21 +22,24 @@
           color="info"
           class="btn-custom"
           :large="true"
-          :disabled="!ready"
+          :disabled="!ready || played"
           @click="play"
-          >再生</v-btn>
+          >{{ played ? '再生中' : '再生'}}</v-btn>
       </v-flex>
     </v-layout>
   </div>
 </template>
 
 <script>
+/* eslint no-await-in-loop: 0 */
+
 import { shuffleArray, flattenArray } from '../services/ArrayService';
-import { generateAudioList, playAudio } from '../services/InspectionService';
+import { generateAudioList, playAudio, outputCsvForAuditoryAttentionInspection } from '../services/InspectionService';
 
 let start = 0;
 let play = false;
 let isCorrect = false;
+const resultList = [];
 
 document.onkeydown = function answer(e) {
   if (play === false) return;
@@ -45,9 +48,8 @@ document.onkeydown = function answer(e) {
   const end = performance.now();
   const time = end - start;
 
-  if (isCorrect === true) console.log('correct!');
-  else console.log('wrong...');
-  console.log(time);
+  if (isCorrect === true) resultList.push({ result: '正', time: Math.round(time) });
+  else resultList.push({ result: '誤', time: Math.round(time) });
 };
 
 function getRandomInt(min, max) {
@@ -108,20 +110,6 @@ function sleep(msec) {
   return new Promise(resolve => setTimeout(resolve, msec));
 }
 
-async function intervalFunc(callback) {
-  const intervals = [
-    800,
-    1500,
-    3000,
-  ];
-
-  for (let i = 0; i < 100; i += 1) {
-    const interval = intervals[getRandomInt(0, 3)];
-    callback(i);
-    await sleep(interval);
-  }
-}
-
 export default {
   props: [
     'title',
@@ -136,6 +124,7 @@ export default {
   methods: {
     play() {
       play = true;
+      this.played = true;
 
       const playSound = (i) => {
         isCorrect = this.audioList[i].correct;
@@ -143,13 +132,28 @@ export default {
         start = performance.now();
       };
 
-      intervalFunc(playSound);
+      this.intervalFunc(playSound);
     },
-    finish() {
-      alert('Finished!!');
+    async intervalFunc(callback) {
+      const intervals = [
+        800,
+        1500,
+        3000,
+      ];
+
+      for (let i = 0; i < 100; i += 1) {
+        const interval = intervals[getRandomInt(0, 3)];
+        callback(i);
+        await sleep(interval);
+      }
+
+      play = false;
+      this.played = false;
+      this.finish();
+    },
+    async finish() {
+      await outputCsvForAuditoryAttentionInspection(this.title, resultList);
       this.browserBack();
-    },
-    interruption() {
     },
     browserBack() {
       this.audioList = [];
