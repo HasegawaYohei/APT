@@ -1,3 +1,4 @@
+/* eslint import/no-extraneous-dependencies: 0 */
 import { remote } from 'electron';
 
 const findUnfinishedInspection = element => element.statuses.some(status => status === '');
@@ -67,18 +68,18 @@ export function generateAnswerButtonList(columnNumber) {
 }
 
 export function generateResultListHeader(columnNumber) {
-  if (columnNumber === 1) return ['状態'];
+  if (columnNumber === 1) return [{ id: 'status1', value: '状態' }];
   if (columnNumber === 2) {
     return [
-      '状態L',
-      '状態R',
+      { id: 'status1', value: '状態L' },
+      { id: 'status2', value: '状態R' },
     ];
   }
   if (columnNumber === 3) {
     return [
-      '状態1',
-      '状態2',
-      '状態3',
+      { id: 'status1', value: '状態1' },
+      { id: 'status2', value: '状態2' },
+      { id: 'status3', value: '状態3' },
     ];
   }
 
@@ -121,4 +122,100 @@ export function playAudio(audioBuffer) {
     source.disconnect();
     context.close();
   };
+}
+
+function appendFile(path, data) {
+  const fs = remote.require('fs');
+  fs.appendFile(path, data, (err) => {
+    if (err) throw err;
+  });
+}
+
+async function outputCsv(path, header, body, appendData) {
+  const { createObjectCsvWriter } = remote.require('csv-writer');
+  const csvWriter = createObjectCsvWriter({
+    path,
+    header,
+    encoding: 'utf8',
+    append: false,
+  });
+
+  await csvWriter.writeRecords(body);
+
+  if (appendData) {
+    appendFile(path, appendData);
+  }
+}
+
+export async function outputCsvForInspectionPanel(filename, csvHeader, bodyOrigin) {
+  const csvfilepath = `./${filename}.csv`;
+  const header = [{ id: 'filename', value: 'ファイル名' }].concat(csvHeader).map(elem => ({
+    id: elem.id,
+    title: elem.value,
+  }));
+  const body = bodyOrigin.map((elem) => {
+    const row = { filename: elem.filename };
+    elem.statuses.forEach((status, i) => {
+      row[`status${i + 1}`] = status;
+    });
+    return row;
+  });
+
+  const totalInspectionNumber = bodyOrigin
+    .filter(elem => elem.statuses.every(status => status !== '')).length;
+  const totalCurrectAnserNumber = bodyOrigin
+    .filter(elem => elem.statuses.every(status => status === '正答')).length;
+  const appendData = `正答率  ${Math.round(totalCurrectAnserNumber / totalInspectionNumber * 100)}%`;
+
+  await outputCsv(csvfilepath, header, body, appendData);
+}
+
+export async function outputCsvForGapInspection(filename, bodyOrigin) {
+  const csvfilepath = `./${filename}.csv`;
+  const header = [
+    { id: 'result', title: '結果' },
+  ];
+  const level = bodyOrigin.find(elem => elem.result === '正').audioIndex;
+  const body = [{
+    result: `Lv.${level} ${level * 2}ms`,
+  }];
+
+  await outputCsv(csvfilepath, header, body);
+}
+
+export async function outputCsvForTheWordUnderNoiseInspection(filename, resultList, resultMapList) {
+  const csvfilepath = `./${filename}.csv`;
+  const header = [
+    { id: 'filename', title: 'ファイル名' },
+    { id: 'result', title: '結果' },
+  ];
+  const body = resultList;
+  const appendDataOrigin = resultMapList.map(resultMap => ({
+    condition: resultMap.condition,
+    correctNumber: resultMap.correctNumber,
+    wrongNumber: resultMap.wrongNumber,
+    correctPercent: resultMap.correctPercent(),
+  }));
+  const appendData = ['S/N条件,正答数,誤答数,正答率']
+    .concat(appendDataOrigin.map(resultMap => Object.values(resultMap).join(','))).join('\n');
+
+  await outputCsv(csvfilepath, header, body, `\n${appendData}`);
+}
+
+export async function outputCsvForAuditoryAttentionInspection(filename, resultList) {
+  const csvfilepath = `./${filename}.csv`;
+  const header = [
+    { id: 'result', title: '正誤' },
+    { id: 'time', title: '応答時間[ms]' },
+  ];
+  const body = resultList;
+  const correctNumber = resultList.filter(_result => _result.result === '正').length;
+  const wrongNumber = resultList.filter(_result => _result.result === '誤').length;
+  const appendData = ['正答数,誤答数,正答率(正答数 / 20)'].concat(Object.values({
+    correctNumber,
+    wrongNumber,
+    correctPercent: `${Math.round(correctNumber / 20 * 100)}%`,
+  }).join(',')).join('\n');
+
+  await outputCsv(csvfilepath, header, body, appendData);
 }
