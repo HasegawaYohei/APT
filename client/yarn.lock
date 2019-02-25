@@ -3018,6 +3018,11 @@ csso@^3.5.0:
   dependencies:
     css-tree "1.0.0-alpha.29"
 
+csv-writer@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/csv-writer/-/csv-writer-1.2.0.tgz#b81a818e297e05308e9b1fc2f8c9342e0206cfea"
+  integrity sha512-ZU7eZ26y7oIOXwFHhTNnT/tF6RXMdQnuTGofzNTe1cvXacZm3Ixd7Oa9mOp2f1t39Ezfzg0h5tqfOjXM180BOg==
+
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"
@@ -3424,7 +3429,7 @@ ejs@~2.5.6:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.9.tgz#7ba254582a560d267437109a68354112475b0ce5"
   integrity sha512-GJCAeDBKfREgkBtgrYSf9hQy9kTb3helv0zGdzqhM7iAkW8FA/ZF97VQDbwFiwIT8MQLLOe5VlPZOEvZAqtUAQ==
 
-electron-builder@^20.29.0, electron-builder@^20.38.5:
+electron-builder@^20.29.0:
   version "20.38.5"
   resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.38.5.tgz#31b3913a68b4911afd4cfc7bcd2522c5808040cd"
   integrity sha512-p88IDHhH2J4hA6KwRBJY+OfVZuFtFIShY3Uh/TwYAfbX0v1RhKZytuGdO8sty2zcWxDYX74xDBv+X9oN6qEIRQ==
@@ -4005,6 +4010,11 @@ expand-range@^1.8.1:
   integrity sha1-opnv/TNf4nIeuujiV+x5ZE/IUzc=
   dependencies:
     fill-range "^2.1.0"
+
+export-to-csv@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/export-to-csv/-/export-to-csv-0.2.1.tgz#8f997156feebc1cf995096da16341aa0100cce4e"
+  integrity sha512-KTbrd3CAZ0cFceJEZr1e5uiMasabeCpXq1/5uvVxDl53o4jXJHnltasQoj2NkzrxD8hU9kdwjnMhoir/7nNx/A==
 
 express@^4.16.2, express@^4.16.3:
   version "4.16.4"
