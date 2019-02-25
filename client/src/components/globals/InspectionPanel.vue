@@ -10,7 +10,7 @@
           :large="true"
           color="warning"
           :style="{marginLeft: 'auto'}"
-          @click="interruption"
+          @click="finish"
           >中断終了</v-btn>
       </v-toolbar>
     </v-card>
@@ -70,10 +70,10 @@
           <v-divider
           ></v-divider>
         </v-flex>
-        <v-flex grow v-for="(headerTitle, i) in resultListHeader" :key="i">
+        <v-flex grow v-for="(header, i) in resultListHeader" :key="i">
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title>{{headerTitle}}</v-list-tile-title>
+              <v-list-tile-title>{{header.value}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider></v-divider>
@@ -111,7 +111,14 @@
 </template>
 
 <script>
-import { internalNext, internalBack, playAudio } from '../../services/InspectionService';
+/* eslint no-await-in-loop: 0 */
+
+import {
+  internalNext,
+  internalBack,
+  playAudio,
+  outputCsvForInspectionPanel,
+} from '../../services/InspectionService';
 
 export default {
   props: [
@@ -153,14 +160,16 @@ export default {
       const finish = this.resultList.find(_result => !_result.statuses.every(status => status !== '')) == null;
 
       if (finish) {
-        alert('finish');
+        this.finish();
         return;
       }
 
       this.played = false;
       this.cursor = internalNext(this.resultList, this.cursor);
     },
-    interruption() {
+    async finish() {
+      await outputCsvForInspectionPanel(this.title, this.resultListHeader, this.resultList);
+      this.browserBack();
     },
     browserBack() {
       this.$router.push({
@@ -176,4 +185,7 @@ export default {
   width 90%
 .active
   background-color #BBDEFB
+.result-list
+  height 610px
+  overflow scroll !important
 </style>
