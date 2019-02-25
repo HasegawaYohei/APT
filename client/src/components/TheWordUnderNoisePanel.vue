@@ -10,7 +10,7 @@
           :large="true"
           color="warning"
           :style="{marginLeft: 'auto'}"
-          @click="interruption"
+          @click="finish"
           >中断終了</v-btn>
       </v-toolbar>
     </v-card>
@@ -227,7 +227,7 @@
 </template>
 
 <script>
-import { generateAudioList, playAudio } from '../services/InspectionService';
+import { generateAudioList, playAudio, outputCsvForTheWordUnderNoiseInspection } from '../services/InspectionService';
 import { shuffleArray, flattenArray, splitArray } from '../services/ArrayService';
 
 function buildAudioList(audioListOrigin) {
@@ -269,10 +269,6 @@ function buildResultMapObject(condition) {
     correctPercent,
   };
 }
-
-// function recordAnswer(a, b) {
-
-// }
 
 export default {
   props: [
@@ -331,6 +327,8 @@ export default {
 
       if (isCorrect) resultMap.correctNumber += 1;
       else resultMap.wrongNumber += 1;
+
+      if (this.remainingAudioNumber === 0) this.finish();
     },
     getRgb(remainingAudioNumber, audioNumber) {
       const n = ((remainingAudioNumber - audioNumber) / remainingAudioNumber) * 255;
@@ -340,7 +338,11 @@ export default {
       const n = 255 - ((remainingAudioNumber - audioNumber) / remainingAudioNumber) * 255;
       return `rgb(${n},${n},${0})`;
     },
-    interruption() {
+    async finish() {
+      await outputCsvForTheWordUnderNoiseInspection(
+        this.title, this.resultList, this.resultMapList,
+      );
+      this.browserBack();
     },
     browserBack() {
       this.$router.push({
