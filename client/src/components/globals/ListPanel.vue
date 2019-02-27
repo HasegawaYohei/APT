@@ -5,7 +5,16 @@
         <v-icon>arrow_back</v-icon>
       </v-btn>
       <v-toolbar-title>{{title}}</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-btn
+        icon
+        :large="true"
+        color="warning"
+        :style="{marginLeft: 'auto'}"
+        v-if="isMain"
+        @click="showDialog"
+      >
+        <v-icon>fas fa-folder</v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-list two-line>
@@ -31,6 +40,9 @@
 </template>
 
 <script>
+/* eslint import/no-extraneous-dependencies: 0 */
+import { remote } from 'electron';
+
 export default {
   props: [
     'title',
@@ -41,6 +53,13 @@ export default {
   data: () => ({
   }),
   methods: {
+    showDialog() {
+      const { dialog } = remote;
+      const filepath = dialog.showOpenDialog({
+        properties: ['openDirectory'],
+      })[0];
+      localStorage.setItem('appPath', filepath);
+    },
     link(path) {
       this.$router.push({
         name: path,

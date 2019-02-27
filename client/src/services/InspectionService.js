@@ -5,11 +5,13 @@ const findUnfinishedInspection = element => element.statuses.some(status => stat
 
 function getAudioFile(filepath) {
   const fs = remote.require('fs');
-  const filenameList = fs.readdirSync(filepath);
-
+  const path = remote.require('path');
+  const appPath = localStorage.getItem('appPath');
+  const audioDirPath = path.resolve(appPath, '音声情報', filepath);
+  const filenameList = fs.readdirSync(audioDirPath);
   return filenameList.filter(filename => filename.slice(-4) === '.wav').map(filename => ({
     filename,
-    data: fs.readFileSync(`${filepath}${filename}`),
+    data: fs.readFileSync(path.resolve(audioDirPath, filename)),
   }));
 }
 
@@ -131,10 +133,13 @@ function appendFile(path, data) {
   });
 }
 
-async function outputCsv(path, header, body, appendData) {
+async function outputCsv(filepath, header, body, appendData) {
   const { createObjectCsvWriter } = remote.require('csv-writer');
+  const path = remote.require('path');
+  const appPath = localStorage.getItem('appPath');
+  const resolvedPath = path.resolve(appPath, '結果出力', filepath);
   const csvWriter = createObjectCsvWriter({
-    path,
+    path: resolvedPath,
     header,
     encoding: 'utf8',
     append: false,
@@ -143,7 +148,7 @@ async function outputCsv(path, header, body, appendData) {
   await csvWriter.writeRecords(body);
 
   if (appendData) {
-    appendFile(path, appendData);
+    appendFile(resolvedPath, appendData);
   }
 }
 

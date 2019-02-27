@@ -23,7 +23,7 @@ export default new Router({
       props: {
         title: '単耳単音節',
         backPath: 'dichoticListeningInspection',
-        audioDirPath: './public/音声情報/両耳分離聴/単耳単音節/',
+        audioDirPath: '両耳分離聴/単耳単音節/',
         columnNumber: 1,
       },
       component: () => import('./views/Inspection.vue'),
@@ -34,7 +34,7 @@ export default new Router({
       props: {
         title: '単耳単語',
         backPath: 'dichoticListeningInspection',
-        audioDirPath: './public/音声情報/両耳分離聴/単耳単語/',
+        audioDirPath: '両耳分離聴/単耳単語/',
         columnNumber: 1,
       },
       component: () => import('./views/Inspection.vue'),
@@ -45,7 +45,7 @@ export default new Router({
       props: {
         title: '単音節',
         backPath: 'dichoticListeningInspection',
-        audioDirPath: './public/音声情報/両耳分離聴/単音節/',
+        audioDirPath: '両耳分離聴/単音節/',
         columnNumber: 2,
       },
       component: () => import('./views/Inspection.vue'),
@@ -56,7 +56,7 @@ export default new Router({
       props: {
         title: '単語',
         backPath: 'dichoticListeningInspection',
-        audioDirPath: './public/音声情報/両耳分離聴/単語/',
+        audioDirPath: '両耳分離聴/単語/',
         columnNumber: 2,
       },
       component: () => import('./views/Inspection.vue'),
@@ -67,7 +67,7 @@ export default new Router({
       props: {
         title: '文',
         backPath: 'dichoticListeningInspection',
-        audioDirPath: './public/音声情報/両耳分離聴/文/',
+        audioDirPath: '両耳分離聴/文/',
         columnNumber: 2,
       },
       component: () => import('./views/Inspection.vue'),
@@ -83,7 +83,7 @@ export default new Router({
       props: {
         title: '通常発話文',
         backPath: 'fastsoundListeningInspection',
-        audioDirPath: './public/音声情報/早口音声聴取/通常/',
+        audioDirPath: '早口音声聴取/通常/',
         columnNumber: 3,
       },
       component: () => import('./views/Inspection.vue'),
@@ -94,7 +94,7 @@ export default new Router({
       props: {
         title: '1.5倍速',
         backPath: 'fastsoundListeningInspection',
-        audioDirPath: './public/音声情報/早口音声聴取/半倍速/',
+        audioDirPath: '早口音声聴取/半倍速/',
         columnNumber: 3,
       },
       component: () => import('./views/Inspection.vue'),
@@ -105,7 +105,7 @@ export default new Router({
       props: {
         title: '2倍速',
         backPath: 'fastsoundListeningInspection',
-        audioDirPath: './public/音声情報/早口音声聴取/2倍速/',
+        audioDirPath: '早口音声聴取/2倍速/',
         columnNumber: 3,
       },
       component: () => import('./views/Inspection.vue'),
@@ -116,7 +116,7 @@ export default new Router({
       props: {
         title: 'ギャップ検出閾値検査',
         backPath: 'home',
-        audioDirPath: './public/音声情報/ギャップ検出/',
+        audioDirPath: 'ギャップ検出/',
       },
       component: () => import('./views/GapDetectionInspection/Index.vue'),
     },
@@ -126,7 +126,7 @@ export default new Router({
       props: {
         title: '雑音下単語聴取検査',
         backPath: 'home',
-        audioDirPath: './public/音声情報/雑音下単語聴取/',
+        audioDirPath: '雑音下単語聴取/',
       },
       component: () => import('./views/TheWordUnderNoiseInspection/Index.vue'),
     },
@@ -136,7 +136,7 @@ export default new Router({
       props: {
         title: '両耳交互聴取検査',
         backPath: 'home',
-        audioDirPath: './public/音声情報/両耳交互聴/',
+        audioDirPath: '両耳交互聴/',
         columnNumber: 3,
       },
       component: () => import('./views/Inspection.vue'),
@@ -147,7 +147,7 @@ export default new Router({
       props: {
         title: '聴覚的注意検査',
         backPath: 'home',
-        audioDirPath: './public/音声情報/聴覚的注意/',
+        audioDirPath: '聴覚的注意/',
       },
       component: () => import('./views/AuditoryAttentionInspection/Index.vue'),
     },
@@ -157,7 +157,7 @@ export default new Router({
       props: {
         title: '複数音声下聴取',
         backPath: 'home',
-        audioDirPath: './public/音声情報/複数音声聴取/',
+        audioDirPath: '複数音声聴取/',
         columnNumber: 3,
       },
       component: () => import('./views/Inspection.vue'),
